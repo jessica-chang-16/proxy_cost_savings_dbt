@@ -10,6 +10,11 @@ renamed as (
     `company name` as retailer,
     slug as brand
     FROM raw_client_data
+),
+
+final as (
+    SELECT *
+    from renamed
 )
 SELECT *
-FROM renamed
+FROM final
