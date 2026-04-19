@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: fct_outreach_target_list
+    columns:
+      - name: brand
+        data_tests:
+          - not_null
+      - name: region_abv
+        data_tests:
+          - not_null
+      - name: whitelisted
+        data_tests:
+          - not_null
+      - name: proxy
+        data_tests:
+          - not_null
+
+  - name: dim_retailers
+    columns:
+      - name: retailer
+        data_tests:
+          - not_null
+      - name: brand_region
+        data_tests:
+          - not_null
