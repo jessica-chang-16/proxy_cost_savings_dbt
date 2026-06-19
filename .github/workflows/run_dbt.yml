@@ -13,10 +13,10 @@ jobs:
     steps:
     #2 Checkout my code
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     #3 Setup Python
     - name: Setup Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.12'
     #4 Install dbt and BigQuery adapter
@@ -27,7 +27,7 @@ jobs:
     - name: Authenticate to Google Cloud
       uses: google-github-actions/auth@v1
       with:
-        credentials_json ${{ secrets.GCP_CREDENTIALS }}
+        credentials_json: ${{ secrets.GCP_CREDENTIALS }}
     #6 Run the pipeline
     - name: Execute dbt build
       run: dbt build --profiles-dir .
