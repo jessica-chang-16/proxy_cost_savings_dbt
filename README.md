@@ -1,30 +1,28 @@
 ### Proxy Cost Savings Analysis | dbt core, BigQuery, SQL
 
 #### Summary:
-This project transforms a manual, error-prone gap analysis project into a modular ELT pipeline. Using mock data, I migrated fragmented CSV data into BigQuery to help identify high-cost crawlers that are using third-party proxies.
-
-The focus of the project is to create a target list of clients where we are currently not being allowed whitelisting so having to use costly third-party proxies to help collect data. With the results of the target list, we can utilize these established relationships to implement whitelisting headers; The end result being reduced third-party proxies used.
+This project transforms a manual, error-prone gap analysis process into a fully, automated, modular ELT pipeline. The objective is to identify high-cost web crawlers that are utilizing third-party proxies due to lack of client whitelisting. By isolating these targets, the customer success team can leverage existing relationships to implement direct whitelisting headers, resulting in a direct reduction of third-party proxy costs.
 
 #### Business Impact:
-  - Cost Reduction: Automates the identification of clients who own high cost crawlers.
-  - Operational Efficiency: Replaces manual spreadsheet joins with automated dbt models.
-  - Actionable Insights: Generates a prioritized outreach list for account management team.
+  - Cost Reduction: Automatically isolates and outputs target clients responsible for high-cost proxy consumption.
+  - Operational Efficiency: Eliminates manual spreadsheet joins and ad-hoc analysis, ensuring data freshness through an automated daily execution schedule.
+  - Actionable Insights: Generates a prioritized, strictly tested outreach list for customer success team to execute whitelisting requests.
     
 
 #### Data Architecture & Modeling:
 ![Data lineage graph](cost_savings_data_lineage.png)
 
-This project follows a modular, three-tier architecture designed for scalability and maintainability. 
+This pipeline follows a modular, three-tier architecture designed for scalability and maintainability within BigQuery. 
 
-  - Staging Layer (`stg_`): Cleans and standardizes raw CSV data from Google Sheets. Handles renaming, type casting, and initital filtering to ensure a clean starting point.
+  - Ingestion: Connects directly to live Google Sheets via BigQuery external tables, bypassing the need for static CSV uploads.
+  - Staging Layer (`stg_`): Cleans and standardizes raw CSV data from Google Sheets. Handles renaming, type casting, and initital filtering to ensure a clean starting point and so downstream joins do not silently drop records.
   - Intermediate Layer (`int_`): Performs core business logic and joins (`int_proxy_exception`) with client metadata to isolate high-cost proxy dependant crawlers.
   - Marts Layer (`fct_`, `dim_`):
     - fct_outreach_target_list: This is the centralized fact table used for reporting and outreach prioritization.
     - dim_retailers: This is a dimension table that provides the single source of truth for retailer attributes. 
 
 #### Key Features:
+  - CI/CD Orchestration: The pipeline is orchestrated via GitHub Actions. A daily cron schedule securely authenticates to Google Cloud via Service Accounts to execute the dbt build command, ensuring zero-maintenance data freshness.
   - Modular Logic: Decoupled transformations for maintainability and reusibility.
-  - Data Quality: Implemented automated dbt tests (unique, not_null) to ensure data integrity.
-  - Star Schema: Designed the final marts to isolate facts from descriptive dimensions, allowing for performance and streamlined architecture within BigQuery. 
-
-This is currently still being worked on. Next steps after having tested is to document and orchestrate within dbt cloud.
+  - Data Quality: Data integrity tests are strictyle enforced at the staging layer to catch formatting errors and nulls before they can corrupt downstream metrics.
+  - Star Schema Design: Designed the final marts to isolate facts from descriptive dimensions, allowing for performance and streamlined architecture within BigQuery. 
