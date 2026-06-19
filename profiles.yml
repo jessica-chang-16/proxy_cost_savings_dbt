@@ -1,0 +1,11 @@
+cost_savings:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: oauth 
+      project: cost-savings-tl
+      dataset: analytics
+      threads: 4
+      timeout_seconds: 300
+      location: US
