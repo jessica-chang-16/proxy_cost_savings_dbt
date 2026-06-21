@@ -1,5 +1,3 @@
-{{config(materialized ='table')}}
-
 WITH whitelisting as(
     SELECT
         *

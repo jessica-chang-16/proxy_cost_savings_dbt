@@ -1,5 +1,3 @@
-{{config(materialized ='table')}}
-
 WITH proxy_data as (
     SELECT
     *
